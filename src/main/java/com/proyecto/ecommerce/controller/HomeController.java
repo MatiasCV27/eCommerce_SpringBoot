@@ -4,6 +4,8 @@ import com.proyecto.ecommerce.model.DetalleOrden;
 import com.proyecto.ecommerce.model.Orden;
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.model.Usuario;
+import com.proyecto.ecommerce.service.IDetalleOrdenService;
+import com.proyecto.ecommerce.service.IOrdenService;
 import com.proyecto.ecommerce.service.IProductoService;
 import com.proyecto.ecommerce.service.IUsuarioService;
 import org.slf4j.Logger;
@@ -14,8 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -28,6 +32,12 @@ public class HomeController {
 
     @Autowired
     private IUsuarioService IUsuarioService;
+
+    @Autowired
+    private IOrdenService iOrdenService;
+
+    @Autowired
+    private IDetalleOrdenService iDetalleOrdenService;
 
     // Para almacenar los detalles de la orden
     List<DetalleOrden> detalles = new ArrayList<DetalleOrden>();
@@ -124,6 +134,41 @@ public class HomeController {
         model.addAttribute("usuario", usuario);
 
         return "usuario/resumenorden";
+    }
+
+    // Guardar la orden
+    @GetMapping("/saveOrder")
+    public String saveOrder() {
+        Date fechaCreacion = new Date();
+        orden.setFechaCreacion(fechaCreacion);
+        orden.setNumero(iOrdenService.generarNumeroOrden());
+
+        // Usuario
+        Usuario usuario = IUsuarioService.findbyId(2).get();
+
+        orden.setUsuario(usuario);
+        iOrdenService.save(orden);
+
+        // Guardar detalles
+        for(DetalleOrden dt: detalles) {
+            dt.setOrden(orden);
+            iDetalleOrdenService.save(dt);
+        }
+
+        // Limpiar lista y orden
+        orden = new Orden();
+        detalles.clear();
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/search")
+    public String searchProduct(@RequestParam String nombre, Model model) {
+        log.info("Nombre del producto: {}", nombre);
+        List<Producto> productos = IProductoService.findAll().stream().filter(p -> p.getNombre()
+                .contains(nombre)).collect(Collectors.toList());
+        model.addAttribute("productos", productos);
+        return "usuario/home";
     }
 
 }
