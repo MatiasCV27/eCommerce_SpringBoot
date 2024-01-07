@@ -8,4 +8,6 @@ public interface IUsuarioService {
 
     Optional<Usuario> findbyId(Integer id);
 
+    Usuario save(Usuario usuario);
+
 }
