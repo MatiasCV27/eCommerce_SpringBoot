@@ -1,12 +1,14 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Orden;
+import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IOrdenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdenServiceImpl implements IOrdenService {
@@ -17,6 +19,11 @@ public class OrdenServiceImpl implements IOrdenService {
     @Override
     public List<Orden> findAll() {
         return ordenRepository.findAll();
+    }
+
+    @Override
+    public Optional<Orden> findById(Integer id) {
+        return ordenRepository.findById(id);
     }
 
     @Override
@@ -45,6 +52,11 @@ public class OrdenServiceImpl implements IOrdenService {
         else if (numero < 10000)  numeroConcat = "000000" + numero;
 
         return numeroConcat;
+    }
+
+    @Override
+    public List<Orden> findByUsuario(Usuario usuario) {
+        return ordenRepository.findByUsuario(usuario);
     }
 
 }

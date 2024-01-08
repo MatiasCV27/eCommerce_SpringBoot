@@ -1,6 +1,8 @@
 package com.proyecto.ecommerce.controller;
 
+import com.proyecto.ecommerce.model.Orden;
 import com.proyecto.ecommerce.model.Usuario;
+import com.proyecto.ecommerce.service.IOrdenService;
 import com.proyecto.ecommerce.service.IUsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -9,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +26,9 @@ public class UsuarioController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
+    @Autowired
+    private IOrdenService ordenService;
 
     @GetMapping("/registro")
     public String create() {
@@ -63,7 +70,27 @@ public class UsuarioController {
     @GetMapping("/compras")
     public String obtenerCompras(Model model, HttpSession session) {
         model.addAttribute("sesion", session.getAttribute("idusuario"));
+
+        Usuario usuario = usuarioService.findbyId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
+        List<Orden> ordenes = ordenService.findByUsuario(usuario);
+
+        model.addAttribute("ordenes", ordenes);
+
         return "usuario/compras";
+    }
+
+    @GetMapping("/detalle/{id}")
+    public String detalleCompra(@PathVariable Integer id, HttpSession session, Model model) {
+        log.info("Id de la orden: {}", id);
+        Optional<Orden> orden = ordenService.findById(id);
+
+        model.addAttribute("detalles", orden.get().getDetalle());
+        log.info("Detalle orden: {}", orden.get().getDetalle());
+
+        //sesion
+        model.addAttribute("sesion", session.getAttribute("idusuario"));
+
+        return "usuario/detallecompra";
     }
 
 }
