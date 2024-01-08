@@ -8,6 +8,7 @@ import com.proyecto.ecommerce.service.IDetalleOrdenService;
 import com.proyecto.ecommerce.service.IOrdenService;
 import com.proyecto.ecommerce.service.IProductoService;
 import com.proyecto.ecommerce.service.IUsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,8 @@ public class HomeController {
     Orden orden = new Orden();
 
     @GetMapping("")
-    public String Home(Model model) {
+    public String Home(Model model, HttpSession session) {
+        log.info("Sesion del usuario: {}", session.getAttribute("idusuario"));
         model.addAttribute("productos", IProductoService.findAll());
         return "usuario/home";
     }
@@ -125,9 +127,9 @@ public class HomeController {
     }
 
     @GetMapping("/order")
-    public String order(Model model) {
+    public String order(Model model, HttpSession session) {
 
-        Usuario usuario = IUsuarioService.findbyId(2).get();
+        Usuario usuario = IUsuarioService.findbyId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
 
         model.addAttribute("cart", detalles);
         model.addAttribute("orden", orden);
@@ -138,13 +140,13 @@ public class HomeController {
 
     // Guardar la orden
     @GetMapping("/saveOrder")
-    public String saveOrder() {
+    public String saveOrder(HttpSession session) {
         Date fechaCreacion = new Date();
         orden.setFechaCreacion(fechaCreacion);
         orden.setNumero(iOrdenService.generarNumeroOrden());
 
         // Usuario
-        Usuario usuario = IUsuarioService.findbyId(2).get();
+        Usuario usuario = IUsuarioService.findbyId(Integer.parseInt(session.getAttribute("idusuario").toString())).get();
 
         orden.setUsuario(usuario);
         iOrdenService.save(orden);
