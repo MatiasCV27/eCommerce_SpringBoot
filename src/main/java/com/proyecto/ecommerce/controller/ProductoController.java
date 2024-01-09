@@ -5,7 +5,7 @@ import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.service.IProductoService;
 import com.proyecto.ecommerce.service.IUsuarioService;
 import com.proyecto.ecommerce.service.UploadFileService;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

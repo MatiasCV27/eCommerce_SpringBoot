@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Usuario;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
