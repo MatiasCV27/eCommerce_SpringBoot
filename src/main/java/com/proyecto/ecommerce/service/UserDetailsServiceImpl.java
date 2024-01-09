@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.model.Usuario;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private IUsuarioService usuarioService;
 
     @Autowired
-    private BCryptPasswordEncoder bCrypt;
-
-    @Autowired
     HttpSession session;
+
+    private BCryptPasswordEncoder bCrypt;
 
     private final Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
